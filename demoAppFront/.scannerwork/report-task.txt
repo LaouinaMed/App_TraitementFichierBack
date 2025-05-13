@@ -1,0 +1,6 @@
+projectKey=demoAppFront
+serverUrl=http://localhost:9001
+serverVersion=25.2.0.102705
+dashboardUrl=http://localhost:9001/dashboard?id=demoAppFront
+ceTaskId=349506be-4084-4b01-b232-a488753d683c
+ceTaskUrl=http://localhost:9001/api/ce/task?id=349506be-4084-4b01-b232-a488753d683c

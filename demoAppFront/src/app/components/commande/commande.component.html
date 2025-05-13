@@ -1,0 +1,164 @@
+<div class="row g-3">
+    <div class="col-6">
+      <div class="card">
+        <div class="card-header bg-success">
+          <strong>Chercher Commandes</strong>
+        </div>
+        <div class="card-body">
+          <input type="text" class="form-control" [(ngModel)]="searchQuery" placeholder="Chercher Par Nom, Produit, Status" (input)="onSearch()"/>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isAdmin" class="col-3">
+      <div class="card">
+          <div class="card-header bg-success">
+              <strong>Ajouter une commande</strong>
+          </div>
+  
+          <div class="card-body">
+            <button class="btn btn-success my-2" (click)="openNewCommande()">Add Commande</button>
+          </div>
+      </div>  
+  </div>
+
+  <div *ngIf="isAdmin" class="col-3">
+    <div class="card">
+      <div class="card-header">
+          <Strong>Importer le fichier.txt</Strong>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="fileInput" class="form-label">Sélectionner un fichier :</label>
+          <input type="file" id="fileInput" (change)="onFileSelected($event)" class="form-control" />
+        </div>
+      
+        <button (click)="onUploadFile()" class="btn btn-primary">Uploader</button>
+      </div>
+    </div>
+</div> 
+  
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header bg-success">
+        <strong>Liste des Commandes</strong>
+      </div>
+      <div class="card-body">
+        <div *ngIf="filteredCommandes.length === 0">
+          <h3>Aucun résultat trouvé</h3>
+      </div>
+        <table *ngIf="filteredCommandes.length !== 0" class="table table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nom Personne</th>
+              <th>Produit</th>
+              <th>Prix</th>
+              <th>Quantité</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th >Address</th>
+              <th *ngIf="isUser_Edit_Statut || isAdmin">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filteredCommandes; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item.personne.nom }}</td>
+              <td>{{ item.produit.libeller }}</td>
+              <td>{{ item.produit.prix }}</td>
+              <td>{{ item.quantite }}</td>
+              <td>{{ item.montant }}</td>
+              <td>{{ item.statut }}</td>
+              <td>{{ item.personne.adresse }}</td>
+
+              <td *ngIf="isUser_Edit_Statut || isAdmin" >
+                <button   *ngIf="isUser_Edit_Statut || isAdmin" class="btn btn-primary me-4" (click)="onEdit(item)">Edit</button>
+                <button *ngIf="isAdmin"  class="btn btn-danger me-4" (click)="onDelete(item.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  
+  <div  class="modal fade" id="commandeModal" tabindex="-1" aria-labelledby="personneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="personneModalLabel">
+            {{ commandeObj.id ? 'Modifier Commande' : 'Ajouter Commande' }}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <form #form="ngForm" (ngSubmit)="onSaveCommande()">
+            <div class="row">
+              <div *ngIf="isAdmin"  class="col-12 mb-3">
+                <label for="nomPersonne">Nom Personne</label>
+                <input
+                  type="text"
+                  name="nomPersonne"
+                  [(ngModel)]="commandeObj.personne.nom"
+                  class="form-control"
+                  #nom="ngModel"
+                  [class.is-invalid]="nom.invalid && nom.touched"
+                />
+                <small *ngIf="nom.invalid && nom.touched" class="text-danger">Nom invalide.</small>
+              </div>
+  
+              <div *ngIf="isAdmin"  class="col-12 mb-3">
+                  <label for="nomPersonne">Tel</label>
+                  <input
+                    type="text"
+                    name="tel"
+                    [(ngModel)]="commandeObj.personne.tel"
+                    class="form-control"
+                  />
+                </div>
+  
+              <div *ngIf="isAdmin"  class="col-12 mb-3">
+                  <label for="quantite">Quantite</label>
+                  <input
+                    type="number" name="quantite" [(ngModel)]="commandeObj.quantite" class="form-control"/>
+                </div>
+    
+                <div *ngIf="isAdmin"  class="col-12 mb-3">
+                  <label for="libellerProduit">Produit</label>
+                  <select name="libellerProduit" [(ngModel)]="commandeObj.produit.libeller" class="form-control" #libeller="ngModel">
+                    <option *ngIf="produitsDisponibles.length === 0" disabled>Pas de produits disponibles</option>
+                    <option *ngFor="let produit of produitsDisponibles" [value]="produit.libeller">{{ produit.libeller }}</option>
+                  </select>
+                </div>
+  
+    
+              <div class="col-12 mb-3">
+                  <label for="statut">Statut</label>
+                  <select name="statut" [(ngModel)]="commandeObj.statut" class="form-control" #statut="ngModel">
+                      <option *ngIf="statutsDisponibles.length === 0" disabled>Pas de statuts disponibles</option>
+                      <option *ngFor="let statut of statutsDisponibles" [value]="statut">{{ statut }}</option>                </select>
+              </div>
+    
+  
+            </div>
+    
+       
+  
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">Annuler</button>
+              <button  type="submit" class="btn btn-success" [disabled]="form.invalid">
+                  {{ commandeObj.id != null && commandeObj.id !== 0 ? 'Update Client' : 'Save Client' }}
+              </button>
+    
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  

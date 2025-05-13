@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container-fluid">
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mynavbar">
+        <ul class="navbar-nav me-auto">
+
+          <li class="nav-item" style="margin-top:-12px;" *ngIf="isAdmin()">
+            <a class="nav-link" routerLink="dashboard" routerLinkActive="active"><Strong>DashBoard</Strong></a>
+          </li>
+        
+          <li class="nav-item" style="margin-top:-12px;" *ngIf="isAdmin()">
+            <a class="nav-link" routerLink="personne" routerLinkActive="active"><Strong>Personne</Strong></a>
+          </li>
+          <li class="nav-item" style="margin-top:-12px;">
+            <a class="nav-link" routerLink="produit" routerLinkActive="active"><Strong>Produit</Strong></a>
+          </li>
+          <li class="nav-item" style="margin-top:-12px;" >
+            <a class="nav-link" routerLink="commande" routerLinkActive="active"><Strong>Commande</Strong></a>
+          </li>
+          <li class="nav-item" style="margin-top:-12px;" *ngIf="isAdmin()">
+            <a class="nav-link" routerLink="logs" routerLinkActive="active"><Strong>LogsErreur</Strong></a>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item" style="margin-top:-4px;">
+            <button class="btn btn-danger" (click)="logout()">Deconnexion</button>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+<div class="container pt-1">
+    <router-outlet></router-outlet>
+</div>
+  

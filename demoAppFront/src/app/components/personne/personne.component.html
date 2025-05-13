@@ -1,0 +1,173 @@
+<div class="row g-3">
+  <div class="col-8">
+      <div class="card">
+          <div class="card-header bg-success">
+              <strong>Chercher Personnes</strong>
+          </div>
+
+          <div class="card-body">
+              <input type="text" class="form-control" [(ngModel)]="searchQuery" placeholder="Chercher Par Cin, Nom, Prenom, Address,Tel"  (input)="onSearch()" />
+          </div>
+      </div>  
+  
+  </div>
+
+  <div class="col-4">
+    <div class="card">
+        <div class="card-header bg-success">
+            <strong>Ajouter une personne</strong>
+        </div>
+
+        <div class="card-body">
+          <button class="btn btn-success my-2" (click)="openNewPersonne()">Add Client</button>
+        </div>
+    </div>  
+
+</div>
+
+<!--
+  <div class="col-4">
+      <div class="card">
+        <div class="card-header">
+            <Strong>Importer le fichier.txt</Strong>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="fileInput" class="form-label">Sélectionner un fichier :</label>
+            <input type="file" id="fileInput" (change)="onFileSelected($event)" class="form-control" />
+          </div>
+        
+          <button (click)="onUploadFile()" class="btn btn-primary">Uploader</button>
+        </div>
+      </div>
+  </div>  
+-->
+
+  <div class="col-12"> 
+      <div class="card">
+          <div class="card-header bg-success">
+              <strong>Personnes List</strong>
+          </div>
+
+          <div class="card-body">
+            
+              <div *ngIf="filteredPersonnes.length === 0">
+                  <h3>Aucun résultat trouvé</h3>
+              </div>
+              <table *ngIf="filteredPersonnes.length !== 0" class="table table-bordered">
+                  <thead>
+                      <tr>
+                          <th></th>
+                          <th>Nom</th>
+                          <th>Prénom</th>
+                          <th>CIN</th>
+                          <th>Tel</th>
+                          <th>Address</th>
+                          <th>Email</th>
+                          <th>Action</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let item of filteredPersonnes let i = index; ">
+                          <td>{{ i+1 }}</td>
+                          <td>{{ item.nom }}</td>
+                          <td>{{ item.prenom }}</td>
+                          <td>{{ item.cin }}</td>
+                          <td>{{ item.tel }}</td>
+                          <td>{{ item.adresse }}</td>
+                          <td>{{ item.email }}</td>
+                          
+                          <td>
+                              <button class="btn btn-primary me-4" (click)="onEdit(item)">Edit</button>
+                              <button class="btn btn-danger me-4" (click)="onDelete(item.id)">Delete</button>
+                              <button class="btn btn-info" (click)="onSelectUser(item)">Rôles</button>
+
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+  
+<div class="modal fade" id="personneModal" tabindex="-1" aria-labelledby="personneModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="personneModalLabel">
+          {{ personneObj.id ? 'Modifier Personne' : 'Ajouter Personne' }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <form #form="ngForm" (ngSubmit)="onSavePersonne(form)">
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label for="nom">Nom</label>
+              <input type="text" name="nom" [(ngModel)]="personneObj.nom" class="form-control"
+                #nom="ngModel" [pattern]="patterns.nom"
+                [class.is-invalid]="nom.invalid && nom.touched">
+              <small *ngIf="nom.invalid && nom.touched" class="text-danger">Nom invalide (min. 2 lettres).</small>
+            </div>
+
+            <div class="col-6 mb-3">
+              <label for="prenom">Prénom</label>
+              <input type="text" name="prenom" [(ngModel)]="personneObj.prenom" class="form-control"
+                #prenom="ngModel" [pattern]="patterns.prenom"
+                [class.is-invalid]="prenom.invalid && prenom.touched">
+              <small *ngIf="prenom.invalid && prenom.touched" class="text-danger">Prénom invalide.</small>
+            </div>
+
+            <div class="col-6 mb-3">
+              <label for="cin">CIN</label>
+              <input type="text" name="cin" [(ngModel)]="personneObj.cin" class="form-control"
+                #cin="ngModel" [pattern]="patterns.cin"
+                [class.is-invalid]="cin.invalid && cin.touched">
+              <small *ngIf="cin.invalid && cin.touched" class="text-danger">CIN invalide.</small>
+            </div>
+
+            <div class="col-6 mb-3">
+              <label for="tel">Téléphone</label>
+              <input type="text" name="contactNo" [(ngModel)]="personneObj.tel" class="form-control"
+                #tel="ngModel" [pattern]="patterns.tel"
+                [class.is-invalid]="tel.invalid && tel.touched">
+              <small *ngIf="tel.invalid && tel.touched" class="text-danger">Numéro invalide.</small>
+            </div>
+
+            <div class="col-12 mb-3">
+              <label for="adresse">Adresse</label>
+              <input type="text" name="adresse" [(ngModel)]="personneObj.adresse" class="form-control"
+                #adresse="ngModel" [pattern]="patterns.adresse"
+                [class.is-invalid]="adresse.invalid && adresse.touched">
+              <small *ngIf="adresse.invalid && adresse.touched" class="text-danger">Adresse trop courte.</small>
+            </div>
+
+            <div class="col-12 mb-3">
+              <label for="email">Email</label>
+              <input type="email" name="email" [(ngModel)]="personneObj.email" class="form-control"
+                #email="ngModel" [pattern]="patterns.email"
+                [class.is-invalid]="email.invalid && email.touched">
+              <small *ngIf="email.invalid && email.touched" class="text-danger">Email invalide.</small>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-success" [disabled]="form.invalid">
+              {{ personneObj.id ? 'Mettre à jour' : 'Enregistrer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<app-role-managment
+[selectedUser]="selectedUser" >
+</app-role-managment>

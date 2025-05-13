@@ -1,0 +1,111 @@
+<div class="row g-3">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header bg-success">
+                <strong>Chercher Produit</strong>
+            </div>
+
+            <div class="card-body">
+                <input type="text" class="form-control" [(ngModel)]="searchQuery" placeholder="Chercher Par produit"  (input)="onSearch()" />
+            </div>
+        </div>  
+   
+    </div>
+
+
+    <div *ngIf="isAdmin" class="col-4">
+        <div class="card">
+            <div class="card-header bg-success">
+                <strong>Ajouter un produit</strong>
+            </div>
+    
+            <div class="card-body">
+              <button class="btn btn-success my-2" (click)="openNewProduit()">Add Product</button>
+            </div>
+        </div>  
+    </div>
+
+    <div class="col-10"> 
+        <div class="card">
+            <div class="card-header bg-success">
+                <strong>Produits List</strong>
+            </div>
+
+            <div class="card-body">
+                <div class="card-body">
+                    <div *ngIf="filteredProduits.length === 0">
+                      <h3>Aucun résultat trouvé</h3>
+                  </div>
+                <table *ngIf="filteredProduits.length !== 0" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Produit</th>
+                            <th>Quantite</th>
+                            <th>Prix</th>
+                            <th  *ngIf="isAdmin">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of filteredProduits let i = index; ">
+                            <td>{{ i+1 }}</td>
+                            <td>{{ item.libeller }}</td>
+                            <td>{{ item.quantite }}</td>
+                            <td>{{ item.prix }}</td>
+                            
+                            
+                            <td *ngIf="isAdmin">
+                                <button   class="btn btn-primary me-4" (click)="onEdit(item)">Edit</button>
+                                <button   class="btn btn-danger me-4" (click)="onDelete(item.id)">Delete</button>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isAdmin" class="modal fade" id="produitModal" tabindex="-1" aria-labelledby="personneModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+              <h5 class="modal-title" id="personneModalLabel">
+                {{ produitObj.id ? 'Modifier Produitt' : 'Ajouter Produit' }}
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <form #form="ngForm" (ngSubmit)="onSaveProduit(form)">
+                    <div class="row">
+                      <div class="col-12 mb-3">
+                        <label for="libeller">Libeller</label>
+                        <input type="text" name="libeller" [(ngModel)]="produitObj.libeller" class="form-control">
+                      </div>
+                  
+                      <div class="col-12 mb-3">
+                        <label for="Quantité">Quantité</label>
+                        <input type="text" name="Quantité" [(ngModel)]="produitObj.quantite" class="form-control">
+                      </div>
+                  
+                      <div class="col-12 mb-3">
+                        <label for="prix">Prixx</label>
+                        <input type="text" name="prix" [(ngModel)]="produitObj.prix" class="form-control">
+                      </div>
+                    </div>
+                  
+                   
+                  
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">Annuler</button>
+                        <button  type="submit" class="btn btn-success" [disabled]="form.invalid">
+                            {{ produitObj.id != null && produitObj.id !== 0 ? 'Update Client' : 'Save Client' }}
+                        </button>
+                    </div>
+                    
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+

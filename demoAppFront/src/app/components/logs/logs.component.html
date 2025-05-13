@@ -1,0 +1,50 @@
+<div class="row g-3">
+
+    <div class="col-10">
+        <div class="card">
+            <div class="card-header bg-success">
+                <strong>Chercher Par Message</strong>
+            </div>
+
+            <div class="card-body">
+                <input type="text" class="form-control" [(ngModel)]="searchQuery" placeholder="Chercher Par Message"  (input)="onSearch()" />
+            </div>
+        </div>  
+
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-success">
+                <strong>Message</strong>
+            </div>
+
+            <div class="card-body">
+                <div *ngIf="filteredLogs.length === 0">
+                    <h3>Aucun résultat trouvé</h3>
+                </div>
+                <table *ngIf="filteredLogs.length !== 0" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Logs Erreur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of filteredLogs let i = index; ">
+                            <td>{{ i+1 }}</td>
+                            <td>{{ item.message}}</td>
+                         
+                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="totalPages > 1" class="card-footer d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-primary btn-sm" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage <= 0">Précédent</button>
+        <span>Page {{ currentPage + 1 }} sur {{ totalPages }}</span>
+        <button class="btn btn-outline-primary btn-sm" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage >= totalPages - 1">Suivant</button>
+    </div>
+</div>    
