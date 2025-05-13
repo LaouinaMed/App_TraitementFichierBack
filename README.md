@@ -50,3 +50,27 @@ Database Configuration (application.properties):
 
 To connect the backend to your database, edit the `application.properties` file with your configuration. Example for MySQL:
 
+
+Replace the database name, username, and password with your own credentials.
+
+Frontend Tests (Angular):
+
+Unit tests are implemented for the `ProduitComponent`:
+   - Test file: `produit.component.spec.ts`
+   - To run tests, open a terminal at the frontend root and type:
+
+     ng test
+
+Running the Application:
+
+1. Backend:
+   - Navigate to the `backend` folder
+   - Run the app with:
+     mvn spring-boot:run
+
+2. Frontend:
+   - Navigate to the `frontend` folder
+   - Install dependencies and launch the app:
+     npm install
+     ng serve
+
